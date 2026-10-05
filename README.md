@@ -1,2 +1,2 @@
 # Reference Guide
-Pandas commands for reference and copy/pasting.  
+Pandas dataframe commands for reference and copy/pasting.  
