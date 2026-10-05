@@ -1,2 +1,2 @@
-# pandas_foundational_commands
-Foundational Pandas commands for reference and easy copy/pasting 
+# Pandas DataFrame Reference Guide
+Pandas dataframe commands for reference and copy/pasting.  
