@@ -82,7 +82,7 @@ print(df)
 
 
 #An example: 
-#JSON returned from API: 
+#JSON returned from API that looks something like this: 
 data = {
     "location": {
         "latitude": 35.7796,
@@ -196,3 +196,27 @@ weather_df = pd.concat(
     ignore_index=True
 )
 #concatinates each DataFrame into a single DataFrame
+
+
+#Taking it one step farther, if you were generating a fact and dimension table 
+#This is a pseudocode loop: 
+
+for location in locations:
+
+    # 1. Check whether location exists
+    location_key = find_location(location)
+
+    # 2. If it doesn't exist, create it
+    if location_key is None:
+        location_key = create_location(location)
+
+    # 3. Get weather
+    weather_data = get_weather(location)
+
+    # 4. Tag weather with location_key
+    weather_data["location_key"] = location_key
+
+    # 5. Add weather to collection
+    all_weather.append(weather_data)
+
+weather_df = pd.concat(all_weather, ignore_index=True)
