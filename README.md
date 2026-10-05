@@ -1,2 +1,2 @@
 # Pandas DataFrame Reference Guide
-Pandas dataframe commands for reference and copy/pasting.  
+Pandas DataFrame commands for reference, with examples, for most Data Engineering applications.  
