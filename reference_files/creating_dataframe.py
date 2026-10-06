@@ -198,7 +198,8 @@ weather_df = pd.concat(
 #concatinates each DataFrame into a single DataFrame
 
 
-#Taking it one step farther, if you were generating a fact and dimension table 
+#Taking it another step farther, if you were generating a fact and dimension table
+# with your parameters as a dimension table 
 #This is a pseudocode loop: 
 
 for location in locations:
@@ -219,4 +220,7 @@ for location in locations:
     # 5. Add weather to collection
     all_weather.append(weather_data)
 
+#this command would replace any existing data in a previous weather_df, 
+#the generated DataFrame would be stored in a database where the new frame(s) 
+#would be appended to an existing set of tables
 weather_df = pd.concat(all_weather, ignore_index=True)
