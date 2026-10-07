@@ -66,6 +66,8 @@ df.loc[df['height_inches'] >30, ['common_name', 'light']]
 df.loc[(df['height_inches'] > 30) & (df["light"] == 'full sun')]
 df.loc[(df['height_inches'] < 30) | (df["light"] == 'full sun, partial shade')]
 df.loc[~(df['height_inches'] == 30)]
+    # Useful for assignment 
+    #df.loc[condition, column] = value
 
 #Note: .loc[] uses index labels, these can be set not as 0, 1, 2, 3, 4... 
 #ie
@@ -77,4 +79,27 @@ df2.loc['goldenrod':'foxglove'] #goldenrod & foxglove are now the index lables
 # Working with .iloc[]
 #=========================================
 
-#.iloc[] is a slection based on integer-position, exclusive of ending label 
+#.iloc[] is a selection based on integer-position, exclusive of ending label 
+#df.iloc[row postion, colomn position]
+
+#Select single row, returns a Series
+df.iloc[0]
+
+#Select multiple rows
+df.iloc[[0,2]] #returns row 0 and row 2
+
+#Select single column - : returns all rows
+df.iloc[:, 0]
+
+#Select multiple columns 
+df.iloc[:, [0,2]]
+
+#Select a single row and single column 
+df.iloc[0,2] #Returns row at position 0, column at position 2
+
+#Select multiple rows and multiple columns 
+df.iloc[[0,2],[0,2]]
+
+#Selection of rows and columns with a range (slicing)
+df.iloc[0:2] #returns row at position 0 and position 1
+
