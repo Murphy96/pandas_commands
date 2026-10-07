@@ -40,10 +40,10 @@ df[
 
 
 #=========================================
-# Working with loc
+# Working with .loc[]
 #=========================================
 
-#loc is a selection based on labels/conidtions, inclusive of the ending label 
+#.loc[] is a selection based on index labels/conidtions, inclusive of the ending label 
 #df.loc[row_selection, column_selection]
 
 
@@ -56,8 +56,25 @@ df.loc[[0,2],['common_name','height_inches']] #selects first three rows, values 
 df.loc[0:2] #returns row 0 through row 2 (3 rows total)
 df.loc[0:2, ['common_name','height_inches']] #returns row 0 through 2 and values from common_name and height_inches
 
+#Boolean Conditions with .loc[]
+#df.loc[condition, columns]
+
+df.loc[df['height_inches']>30] #locations row where height_inches is >30
+df.loc[df['height_inches'] >30, ['common_name', 'light']]
+
+#Multiple Boolean Conditions using & (and) | (or) ~ (not), helpful when wanting to select specific columns
+df.loc[(df['height_inches'] > 30) & (df["light"] == 'full sun')]
+df.loc[(df['height_inches'] < 30) | (df["light"] == 'full sun, partial shade')]
+df.loc[~(df['height_inches'] == 30)]
+
+#Note: .loc[] uses index labels, these can be set not as 0, 1, 2, 3, 4... 
+#ie
+
+df2 = df.set_index("common_name")
+df2.loc['goldenrod':'foxglove'] #goldenrod & foxglove are now the index lables
+
 #=========================================
-# Working with iloc
+# Working with .iloc[]
 #=========================================
 
-#iloc is a slection based on integer-position, exclusive of ending label 
+#.iloc[] is a slection based on integer-position, exclusive of ending label 
