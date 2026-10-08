@@ -231,3 +231,88 @@ df = df.rename(columns = {
 #============================================================================================
 #Creating Calculated Columns 
 #============================================================================================
+
+#Let's say we need to add 10% to height due to a new fertilizer
+
+df['height_inches']
+df['fertilizer_boost'] = df['height_inches'] * 0.10
+
+df['fertilized_height'] = (
+    df['height_inches'] + df['fertilizer_boost']
+)
+
+#Conditional caluclated Columns 
+
+df['plant_stature'] = df['height_inches'].apply(
+    lambda x: 'Tall' if x > 35
+    else 'Medium' if x > 20
+    else 'Ground Cover'
+)
+
+#============================================================================================
+#Using NumPy to Create Calculated Columns 
+#============================================================================================
+#Can also use numpy, np.where()
+#np.where(condition, value_if_true, value_if_false)
+
+import numpy as np
+
+df['plant_stature'] = np.where(
+    df['height_inches'] > 35, 
+    'Tall', 
+    'Standard'
+)
+
+#Can combine Boolean conditions 
+df["classification"] = np.where(
+    (df["height_inches"] > 20) &
+    (df["sowing_season"] == "fall"),
+    "Fall Tall",
+    "Other"
+)
+
+#Multiple conditions with np.select()
+#np.select(
+#   conditions,
+#    choices,
+#    default=value
+#)
+conditions = [
+    df["height_inches"] >= 35, #Checked first
+    df["height_inches"] >= 20, #Checked second
+]
+
+choices = [
+    "Tall",
+    "Medium",
+]
+
+df["plant_stature"] = np.select(
+    conditions,
+    choices,
+    default="Ground Cover"
+)
+
+#Multiple compound conditions 
+
+conditions = [
+    (df["height_inches"] > 35) &
+    (df["sowing_season"] == "fall"),
+
+    (df["height_inches"] > 35) &
+    (df["sowing_season"] == "spring"),
+
+    df["height_inches"] > 20
+]
+
+choices = [
+    "Fall Tall",
+    "Spring Tall",
+    "Medium"
+]
+
+df["plant_category"] = np.select(
+    conditions,
+    choices,
+    default="Ground Cover"
+)
