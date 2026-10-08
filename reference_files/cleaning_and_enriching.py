@@ -191,6 +191,13 @@ df['height_inches'] = pd.to_numeric(
 df['plant_date'] = pd.to_datetime(
     df['plant_date']
 )
+
+#Convert dats & specify the source format
+df["plant_date"] = pd.to_datetime(
+    df["plant_date"],
+    format = "%m/%d/%Y"
+)
+
 # with invalid values
 df['plant_date'] = pd.to_datetime(
     df['plant_date'], 
@@ -200,10 +207,15 @@ df['plant_date'] = pd.to_datetime(
 #============================================================================================
 #Working with Dates
 #============================================================================================
+#Specify date format 
+#.strftime() converts datetime into a string 
+df["plant_date"] = df["plant_date"].dt.strftime("%m/%d/%Y")
 
-
-
-
+#Extracting date components
+df['plant_date'] = df['plant_date'].dt.year 
+df['plant_date'] = df['plant_date'].dt.month
+df['plant_date'] = df['plant_date'].dt.day
+df['plant_date'] = df['plant_date'].dt.day_name()
 
 
 #============================================================================================
@@ -216,3 +228,6 @@ df = df.rename(columns = {
     'sowing_season': 'SowingSeason'
 })
 
+#============================================================================================
+#Creating Calculated Columns 
+#============================================================================================
