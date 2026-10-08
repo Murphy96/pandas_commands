@@ -23,6 +23,9 @@ print(df.head(1))
 #Prints the last row(s)
 df.tail()
 
+#Returns 5 random rows
+df.sample()
+
 #=======================================
 #Dimension Info
 #=======================================
