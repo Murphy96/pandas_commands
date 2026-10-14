@@ -293,7 +293,7 @@ df["plant_stature"] = np.select(
     default="Ground Cover"
 )
 
-#Multiple compound conditions 
+#Multiple compound conditions with np.select()
 
 conditions = [
     (df["height_inches"] > 35) &
@@ -316,3 +316,21 @@ df["plant_category"] = np.select(
     choices,
     default="Ground Cover"
 )
+
+#============================================================================================
+#Using Assign to Create Multiple Calculated Columns 
+#============================================================================================
+#Assign returns a DataFrame, doesn't modify the existing DataFrame
+df = df.assign(
+    fertilizer_boost=df["height_inches"] * 0.10,
+    fertilized_height=df["height_inches"] * 1.10
+)
+
+
+#============================================================================================
+#Applied Example, Creating Surrogate Keys
+#============================================================================================
+
+#Creating a simple key based on index, will not check if information is added 
+df["employee_key"] = df.index + 1
+
