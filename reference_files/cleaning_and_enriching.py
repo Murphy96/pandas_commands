@@ -328,9 +328,144 @@ df = df.assign(
 
 
 #============================================================================================
-#Applied Example, Creating Surrogate Keys
+#Applied Example: Creating Surrogate Keys
 #============================================================================================
 
 #Creating a simple key based on index, will not check if information is added 
 df["employee_key"] = df.index + 1
 
+#Possible to generate this on the warehouse side using SQL
+
+CREATE TABLE dim_employee
+(
+    employee_key INT IDENTITY(1,1) PRIMARY KEY,
+    employee_id INT,
+    name VARCHAR(100),
+    salary DECIMAL(10,2)
+);
+
+
+#ETL creating a temp row identifier  using range()
+#range(start, stop, step ) default start = 0, default step = 1, stop is exclusive
+#Output is a range object 
+
+df["etl_row_id"] = range(
+    1,
+    len(df) + 1
+)
+
+#============================================================================================
+#Applied Example: Generating a Globally Unique ID using UUIDs
+#============================================================================================
+
+#using UUID, outputs are: 550e8400-e29b-41d4-a716-446655440000
+#very low collision probability 
+#Not for use as a traditional integer surrogate key, best for use as ETL/batch tracking 
+
+import uuid
+
+df["etl_row_id"] = [
+    uuid.uuid4()
+    for _ in range(len(df))
+]
+
+#Example using uuid for a batch identifier 
+import pandas as pd
+import uuid
+
+# Example source data
+df = pd.DataFrame({
+    "image_name": [
+        "image_001.jpg",
+        "image_002.jpg",
+        "image_003.jpg"
+    ],
+    "nitrogen_reading": [12.4, 10.8, 14.1]
+})
+
+# Generate ONE UUID for this ingestion batch
+batch_id = str(uuid.uuid4())
+
+# Generate a separate UUID for each row
+df["etl_row_id"] = [
+    str(uuid.uuid4())
+    for _ in range(len(df))
+]
+
+# Assign the SAME batch ID to every row in this load
+df["batch_id"] = batch_id
+
+print(df)
+
+#============================================================================================
+#Applied Example: Pandas Cleaning Pipeline 
+#============================================================================================
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv(
+    "employees.csv",
+    na_values=["", "NULL", "N/A"]
+)
+
+# Inspect
+df.info()
+
+# Standardize column names
+df = df.rename(columns={
+    "Employee ID": "employee_id",
+    "Hire Date": "hire_date"
+})
+
+# Clean strings
+df["name"] = df["name"].str.strip().str.title()
+df["department"] = df["department"].str.strip()
+
+# Convert data types
+df["employee_id"] = pd.to_numeric(
+    df["employee_id"],
+    errors="coerce"
+)
+
+df["salary"] = pd.to_numeric(
+    df["salary"],
+    errors="coerce"
+)
+
+df["hire_date"] = pd.to_datetime(
+    df["hire_date"],
+    errors="coerce"
+)
+
+# Remove duplicate employees
+df = df.drop_duplicates(
+    subset=["employee_id"]
+)
+
+# Fill missing salary with median
+df["salary"] = df["salary"].fillna(
+    df["salary"].median()
+)
+
+# Fill missing department
+df["department"] = df["department"].fillna(
+    "Unknown"
+)
+
+# Create calculated column
+df["bonus"] = df["salary"] * 0.10
+
+# Create another calculated column
+df["total_compensation"] = (
+    df["salary"] + df["bonus"]
+)
+
+# Create date-derived column
+df["hire_year"] = df["hire_date"].dt.year
+
+# Batch-level ETL identifier
+df["etl_row_id"] = [
+    str(uuid.uuid4())
+    for _ in range(len(df))
+]
