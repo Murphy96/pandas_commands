@@ -87,6 +87,9 @@ pd.to_datetime(
     format="%Y-%m-%d %H:%M:%S"
 )
 
+#------------------------------------------------------------------------------------------------------
+#Handling Invalid Dates
+#------------------------------------------------------------------------------------------------------
 
 #Handling invalid dates
 
@@ -106,7 +109,13 @@ df["event_date"] = pd.to_datetime(
     errors="coerce" #conversts to NaT instead of stopping execution 
 )
 
-# Example error handling using invaild 
+
+
+
+#------------------------------------------------------------------------------------------------------
+#Example: Creating Invalid Date Log
+#------------------------------------------------------------------------------------------------------
+
 import logging
 import pandas as pd
 
