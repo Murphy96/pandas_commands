@@ -228,3 +228,145 @@ counts = Counter(statuses)
 
 print(counts["success"])  # 3
 print(counts.most_common(1))  # [('success', 3)]
+
+#defaultdict: group values without checking every key-------------------------------------
+    #use for grouping records by category, sensor, region, or date 
+    #accessing a missing key in defaultdict can create that key, so this can mutate data
+    #Do not use for large batches, groupby or other approaches will be less memory intensive
+
+from collections import defaultdict
+
+readings_by_sensor = defaultdict(list) #list tells the object to create when a new key is accessed, will create an empty list as the value for a new key
+
+readings_by_sensor["S101"].append(22.5)
+readings_by_sensor["S101"].append(23.0)
+readings_by_sensor["S102"].append(21.8)
+
+print(readings_by_sensor["S101"])
+# [22.5, 23.0]
+
+#example for an ETL workload (SMALL BATCH ONLY)
+
+from collections import defaultdict
+import pandas as pd
+
+# Simulated raw data extracted from a source
+raw_data = [
+    {"sensor_id": "S101", "timestamp": "10:00", "temperature": 22.5},
+    {"sensor_id": "S102", "timestamp": "10:00", "temperature": 21.8},
+    {"sensor_id": "S101", "timestamp": "10:05", "temperature": 23.0},
+    {"sensor_id": "S103", "timestamp": "10:05", "temperature": 24.1},
+    {"sensor_id": "S102", "timestamp": "10:05", "temperature": 22.0},
+    {"sensor_id": "S101", "timestamp": "10:10", "temperature": 22.7},
+]
+
+# Transformation: group readings by sensor
+readings_by_sensor = defaultdict(list)
+
+for record in raw_data:
+    sensor_id = record["sensor_id"]
+    temperature = record["temperature"]
+
+# heapq: a priority queue----------------------------------------
+#heap lets you efficiently retrieve the smallest item 
+#use for selecting the next lowest- priority number, scheduling tasks by piorirty, 
+# mainatining the smallest or largest few values without sorting an entire collection every time \
+
+import heapq
+
+priorities = [5, 1, 8, 2]
+
+heapq.heapify(priorities)
+
+next_priority = heapq.heappop(priorities)
+
+print(next_priority)  # 1
+
+# queue.Queue: a thread safe queue---------------------------------
+# designed to coordinate work between threads safely, supports blocking and coordination features
+#use for multithreaded producer-consumer systems where one part of the program produces work 
+#and the other processes it
+#for asynchronous code using asyncio, there are corresponding asynchronous queue types
+
+from queue import Queue
+
+work_queue = Queue()
+
+work_queue.put("file_001.csv")
+work_queue.put("file_002.csv")
+
+next_file = work_queue.get()
+print(next_file)  # file_001.csv
+
+work_queue.task_done()
+
+# dataclass: a richer version of named tuples ---------------------
+#allows for the defintion of a record with named fields, but unlike a 
+#named tumple, mutable by default, can be made immutable  
+from dataclasses import dataclass
+
+@dataclass
+class SensorReading:
+    sensor_id: str
+    temperature: float
+    humidity: float
+
+reading = SensorReading("S101", 22.5, 61.0)
+
+print(reading.temperature)  # 22.5
+
+reading.temperature = 23.0  # Valid
+
+#immutable 
+@dataclass(frozen=True)
+class SensorReading:
+    sensor_id: str
+    temperature: float
+
+#-------------------------------------------------------------
+# Putting it all together example: 
+#-------------------------------------------------------------
+from collections import Counter, defaultdict
+from dataclasses import dataclass
+
+@dataclass
+class SensorReading:
+    sensor_id: str
+    temperature: float
+    timestamp: str
+
+
+raw_records = [
+    {"sensor_id": "S101", "temperature": 22.5,
+     "timestamp": "2026-10-26T09:00:00"},
+    {"sensor_id": "S102", "temperature": 24.0,
+     "timestamp": "2026-10-26T09:01:00"},
+    {"sensor_id": "S101", "temperature": 23.0,
+     "timestamp": "2026-10-26T09:02:00"}
+]
+
+# Convert incoming dictionaries to structured records.
+readings = [
+    SensorReading(**record)
+    for record in raw_records
+]
+
+# Find the unique sensors.
+sensor_ids = {reading.sensor_id for reading in readings}
+
+# Group temperatures by sensor.
+temperatures_by_sensor = defaultdict(list)
+
+for reading in readings:
+    temperatures_by_sensor[reading.sensor_id].append(
+        reading.temperature
+    )
+
+# Count how many records belong to each sensor.
+records_by_sensor = Counter(
+    reading.sensor_id for reading in readings
+)
+
+print(sensor_ids)
+print(temperatures_by_sensor["S101"])
+print(records_by_sensor)
