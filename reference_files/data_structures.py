@@ -183,5 +183,48 @@ print(today | yesterday)  # Union
 # All four unique IDs
 
 
+#Example ingestion pipeline 
+incoming_ids = {"S101", "S102", "S105"}
+registered_ids = {"S101", "S102", "S103", "S104"}
 
+new_ids = incoming_ids - registered_ids
 
+print(new_ids)
+# {"S105"}
+
+#Best for removing duplicates, finding new or missing IDs, checking if something esists, comparing categories or groups
+
+#---------------------------------------------------------------------------
+# Specialized Collection Types 
+#---------------------------------------------------------------------------
+
+# deque: double-ended queue --------------------------------------------------------------
+    #designed for adding or removing items at either end efficeiently 
+    #Lists best for random acceess by index or append at the end 
+    # This is best for when an algorithm repeatedly adds or removes items from front and back 
+from collections import deque
+
+tasks = deque(["file_001.csv", "file_002.csv"])
+
+tasks.append("file_003.csv")
+tasks.appendleft("urgent_file.csv")
+
+next_task = tasks.popleft()
+
+print(next_task)  # urgent_file.csv
+
+# Counter: count repeated values ----------------------------------------------------------
+    # can build with a dictionary and loop
+    # best for data-quality summaries, frquency analysis, event counts, and tracking categories errors in ETL jobs
+
+from collections import Counter
+
+statuses = [
+    "success", "failure", "success",
+    "success", "failure"
+]
+
+counts = Counter(statuses)
+
+print(counts["success"])  # 3
+print(counts.most_common(1))  # [('success', 3)]
