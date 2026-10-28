@@ -157,7 +157,31 @@ print(sensor.items())
 
 
 #-------Set
-# unique elements, unordred collection 
+# unique elements, unordred collection, if a duplicate is added, one copy is kept
+sensor_ids = {"S101", "S102", "S103"}
+
+sensor_ids.add("S104")
+sensor_ids.add("S101")
+
+print(sensor_ids)
+# Contains S101, S102, S103, S104 (order not guaranteed)
+
+
+#Set  operations
+# Sets are not indexed, used for testing membership and comparing groups
+
+today = {"S101", "S102", "S103"}
+yesterday = {"S102", "S103", "S104"}
+
+print(today & yesterday)  # Intersection
+# {"S102", "S103"}
+
+print(today - yesterday)  # Difference
+# {"S101"}
+
+print(today | yesterday)  # Union
+# All four unique IDs
+
 
 
 
